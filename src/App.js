@@ -1,24 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { LoadingProvider, useLoading } from "./context/loadingContext";
+
+import "./App.css";
+import NavSection from "./molecules/nav_section";
+import Homepage from "./pages/homepage";
+import Profiles from "./pages/profiles";
+import ProfilesDetails from "./pages/profiles_details";
+import AdminData from "./pages/admin_data";
+import LoadingIndicator from "./molecules/loading_indicator.jsx";
+
+const AppContent = () => {
+  const { setLoading } = useLoading();
+  const location = useLocation();
+
+  useEffect(() => {
+    setLoading(true); 
+    setTimeout(() => setLoading(false), 500); 
+  }, [location.pathname]);
+
+  return (
+    <>
+      <NavSection />
+      <LoadingIndicator />
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/profiles" element={<Profiles />} />
+        <Route path="/profiles/:id" element={<ProfilesDetails />} />
+        <Route path="/admin" element={<AdminData />} />
+      </Routes>
+    </>
+  );
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <LoadingProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </LoadingProvider>
   );
 }
 
